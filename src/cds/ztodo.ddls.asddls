@@ -32,25 +32,38 @@
   writeDraftPersistence: 'ZTODO_D', // suffix: '_D' for all draft persistences
 
   -- Additional ETag annotation (time stamp)
-  entityChangeStateId: 'ChangedAt'
+  entityChangeStateId: 'ChangedAt',
+  
+  -- Alternative Key definitions
+  alternativeKey: [{
+    id: 'title',
+    element: ['title'],
+    uniqueness: #UNIQUE_IF_NOT_INITIAL
+  }]
 }
-
-
 define view ZTODO
-  as select from ZTODO_ROOT_B {
+  as select from ZTODO_ROOT_B as todo {
   
   key db_key,
   
   @Search.defaultSearchElement: true
-  title,
+  todo.title,
   
-  status,
-  assignee,
-  duedate,
-  createdby,
-  createdat,
-  changedby,
-  changedat,
+  todo.status,
+  todo.assignee,
+  todo.duedate,
+  
+  @ObjectModel.readOnly: true
+  todo.createdby,
+  
+  @ObjectModel.readOnly: true
+  todo.createdat,
+  
+  @ObjectModel.readOnly: true
+  todo.changedby,
+  
+  @ObjectModel.readOnly: true
+  todo.changedat,
   
 
   // transient fields - equivalent of after loading determinations
